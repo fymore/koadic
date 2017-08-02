@@ -139,3 +139,5 @@ try {
 } catch (e) {
   Koadic.work.error(e);
 }
+
+Koadic.exit();
