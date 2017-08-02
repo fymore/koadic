@@ -54,9 +54,16 @@ class Shell(object):
 
     def run_command(self, cmd):
         action = cmd.split(" ")[0].lower()
-
+        remap = { 
+            "?": "help",
+            "exploit": "run",
+            "execute": "run"
+        }
         if action in self.actions:
             self.actions[action].execute(self, cmd)
+        elif action in remap:
+            cmd.replace(action, remap[action])
+            self.actions[remap[action]].execute(self, cmd)
         else:
             try:
                 self.print_error("Unrecognized command, use 'help'.")
