@@ -49,7 +49,7 @@ class Session(object):
         if self.os != "" or self.user != "" or self.computer != "" or self.elevated != self.ELEVATED_UNKNOWN:
             return False
 
-        data = data.encode().split("~~~")
+        data = data.decode().split("~~~")
         if len(data) != 3:
             return False
 
