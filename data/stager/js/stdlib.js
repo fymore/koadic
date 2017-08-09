@@ -142,12 +142,14 @@ Koadic.user.DC = function()
     try
     {
         var DC = Koadic.WS.RegRead("HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Group Policy\\History\\DCName");
-        return DC;
+        if (DC.length > 0)
+          return DC;
     }
     catch(e)
     {
-        return false;
     }
+    return "Unknown";
+
 }
 
 
