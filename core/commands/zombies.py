@@ -45,6 +45,7 @@ def print_session(shell, session):
     print_data(shell, "IP", session.ip)
     print_data(shell, "User", session.user)
     print_data(shell, "Hostname", session.computer)
+    print_data(shell, "Primary DC", session.dc)
     print_data(shell, "OS", session.os)
     print_data(shell, "Elevated", "YES!" if session.elevated == session.ELEVATED_TRUE else "No")
     shell.print_plain("")
