@@ -99,7 +99,7 @@ class DotNet2JSImplant(core.implant.Implant):
                     ret += '"+\r\n"'
 
             ret += '";'
-            print ret
+            print(ret)
 
     def run(self):
         self.shell.print_error("Plugin is busted. See GitHub issue #1.")
