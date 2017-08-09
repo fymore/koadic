@@ -28,6 +28,7 @@ class Session(object):
         self.elevated = self.ELEVATED_UNKNOWN
         self.user = ""
         self.computer = ""
+        self.dc = ""
 
         self.ip = ip
         self.user_agent = user_agent
@@ -50,13 +51,14 @@ class Session(object):
             return False
 
         data = data.encode().split("~~~")
-        if len(data) != 3:
+        if len(data) != 4:
             return False
 
         self.user = data[0]
         self.elevated = self.ELEVATED_TRUE if "*" in data[0] else self.ELEVATED_FALSE
         self.computer = data[1]
         self.os = data[2]
+        self.dc = data[3].split("\\\\")[1] if data[3] else "Unknown"
 
         self.shell.print_good(
             "Zombie %d: %s @ %s -- %s" % (self.id, self.user, self.computer, self.os))
