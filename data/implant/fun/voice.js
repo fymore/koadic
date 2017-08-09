@@ -8,10 +8,8 @@ try
       Koadic.WS.SendKeys(String.fromCharCode(0xAF));
   }
 
-  voiceObj.Speak('wuh bruh');
+  voiceObj.Speak("~MESSAGE~");
 
-
-  alert("YUH BRUH")
   Koadic.work.report("");
 }
 catch (e)

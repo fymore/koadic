@@ -261,5 +261,22 @@ class Handler(BaseHTTPRequestHandler):
         template = self.options.get("_TEMPLATE_")
 
         script = self.loader.apply_options(script, self.options)
+
+        # obfuscate the script!
+        import string
+        script = script.replace(b"Koadic", ''.join(random.choice(string.ascii_uppercase) for _ in range(10)).encode())
+        '''
+        import uuid
+        jsfile = "/tmp/" + uuid.uuid4().hex
+        outfile = "/tmp/" + uuid.uuid4().hex
+        from subprocess import call
+        open(jsfile, "wb").write(script)
+        print("Wrote to: " + jsfile)
+        call(["uglifyjs", "-o", outfile, "--compress", "--mangle", "--mangle-props", "--toplevel", jsfile])
+        print("Outfile: " + outfile)
+        script = open(outfile, "rb").read()
+        script = script.replace(b".in", b"m222")
+        '''
+
         script = template.replace(b"~SCRIPT~", script)
         return script
