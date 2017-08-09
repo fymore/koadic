@@ -54,6 +54,8 @@ class Shell(object):
 
     def run_command(self, cmd):
         action = cmd.split(" ")[0].lower()
+        if not action:
+            return
         remap = { 
             "?": "help",
             "exploit": "run",
