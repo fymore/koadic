@@ -52,7 +52,7 @@ class Job(object):
         self.errno = str(errno)
         self.errdesc = errdesc
         self.errname = errname
-        self.completed = Job.FAILED
+        self.status = Job.FAILED
         self.sanitize_data(data)
 
         self.print_error()
