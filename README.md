@@ -51,6 +51,19 @@ implant/utils/upload_file | Uploads a file from the listening server to the targ
 ### Disclaimer
 Code samples are provided for educational purposes. Adequate defenses can only be built by researching attack techniques available to malicious actors. Using this code against target systems without prior permission is illegal in most jurisdictions. The authors are not liable for any damages from misuse of this information or code.
 
+### Creators
+- [@Aleph_\__Naught](https://twitter.com/Aleph___Naught)
+- [@The_Naterz](https://twitter.com/The_Naterz)
+- [@JennaMagius](https://twitter.com/JennaMagius)
+- [@zerosum0x0](https://twitter.com/zerosum0x0)
+
+### Contributors
+- [@vvalien1](https://twitter.com/vvalien1)
+- fbctf
+- cclaus
+- Arno0x
+- delirious-lettuce
+
 ### Acknowledgements
 Special thanks to research done by the following individuals:
 
@@ -61,7 +74,3 @@ Special thanks to research done by the following individuals:
 - [@gentilkiwi](https://twitter.com/gentilkiwi)
 - [@mattifestation](https://twitter.com/mattifestation)
 - clymb3r
-- [@Aleph_\__Naught](https://twitter.com/Aleph___Naught)
-- [@The_Naterz](https://twitter.com/The_Naterz)
-- [@JennaMagius](https://twitter.com/JennaMagius)
-- [@zerosum0x0](https://twitter.com/zerosum0x0)
