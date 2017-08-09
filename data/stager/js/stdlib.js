@@ -271,12 +271,12 @@ Koadic.http.create = function()
 
     try
     {
-       http = new ActiveXObject("WinHttp.WinHttpRequest.5.1");
-       http.setTimeouts(30000, 30000, 30000, 0)
+        http = new ActiveXObject("Microsoft.XMLHTTP");
     }
     catch (e)
     {
-        http = new ActiveXObject("Microsoft.XMLHTTP");
+        http = new ActiveXObject("WinHttp.WinHttpRequest.5.1");
+        http.setTimeouts(30000, 30000, 30000, 0)
     }
 
     return http;
