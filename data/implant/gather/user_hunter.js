@@ -10,9 +10,21 @@ function win32_register_via_dynwrapx(manifestPath)
   return win32;
 }
 
+function guid()
+{
+  function s4()
+  {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
 function resolve(hostname)
 {
-  var results = Koadic.shell.exec("ping -n 1 -4 "+hostname, "~DIRECTORY~\\hmm.txt");
+  var results = Koadic.shell.exec("ping -n 1 -4 "+hostname, "~DIRECTORY~\\"+guid());
   return results.split("[")[1].split("]")[0];
 }
 
