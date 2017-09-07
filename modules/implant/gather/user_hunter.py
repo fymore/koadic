@@ -38,6 +38,8 @@ class UserHunterJob(core.job.Job):
         for session in sessions:
             if session:
                 user = session.split(":")[0]
+                if "$" in user:
+                    continue # don't give a shit about machine accounts
                 comps = ", ".join(list(set(session.split(":")[1].split(","))))
                 self.shell.print_plain(user + " => " + comps)
 
