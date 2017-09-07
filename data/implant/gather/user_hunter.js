@@ -10,6 +10,12 @@ function win32_register_via_dynwrapx(manifestPath)
   return win32;
 }
 
+function resolve(hostname)
+{
+  var results = Koadic.shell.exec("ping -n 1 -4 "+hostname, "~DIRECTORY~\\hmm.txt");
+  return results.split("[")[1].split("]")[0];
+}
+
 function read_servers(bufptrptr, entriesread, win32)
 {
 
@@ -39,7 +45,7 @@ function read_sessions(bufptrptr, entriesread, win32)
 
   for(var i=0; i<total_sess;i++) {
     var session = {};
-    session['cname'] = win32.StrGet(win32.NumGet(bufptr, 16*i));
+    session['cname'] = win32.StrGet(win32.NumGet(bufptr, 16*i)).replace('\\\\', '');
     session['username'] = win32.StrGet(win32.NumGet(bufptr, 4+16*i));
     sessions.push(session);
   }
@@ -92,7 +98,7 @@ function net_session_enum(servers, win32)
     res = win32.NetWkstaUserEnum(servers[i], 0, bufptrptr, -1, entriesread, totalentries, 0);
     switch (res) {
       case 0:
-        all_sessions.push(read_netwkstauserenum(bufptrptr, entriesread, win32, servers[i]));
+        all_sessions.push(read_netwkstauserenum(bufptrptr, entriesread, win32, resolve(servers[i])));
         break;
       default:
         //nothing
