@@ -1,6 +1,7 @@
 import core.implant
 import core.job
 import string
+import collections
 
 class DynWrapXShellcodeJob(core.job.Job):
     def create(self):
@@ -16,6 +17,125 @@ class DynWrapXShellcodeJob(core.job.Job):
         if "privilege::debug" in data and "OK" in data:
             self.print_good("privilege::debug -> got SeDebugPrivilege!")
             return
+
+        nice_data = data.split('\n\n')
+        msv_all = []
+        tspkg_all = []
+        wdigest_all = []
+        kerberos_all = []
+        ssp_all = []
+        credman_all = []
+        for section in nice_data:
+            if 'Authentication Id' in section:
+                msv = collections.OrderedDict()
+                tspkg = collections.OrderedDict()
+                wdigest = collections.OrderedDict()
+                kerberos = collections.OrderedDict()
+                ssp = collections.OrderedDict()
+                credman = collections.OrderedDict()
+
+                msv_sec = section.split("msv :\t")[1].split("\ttspkg :")[0].splitlines()
+                for line in msv_sec:
+                    if '\t *' in line:
+                        msv[line.split("* ")[1].split(":")[0]] = line.split(": ")[1].split("\n")[0]
+                if msv:
+                    msv_all.append(msv)
+
+                tspkg_sec = section.split("tspkg :\t")[1].split("\twdigest :")[0].splitlines()
+                for line in tspkg_sec:
+                    if '\t *' in line:
+                        tspkg[line.split("* ")[1].split(":")[0]] = line.split(": ")[1].split("\n")[0]
+                if tspkg:
+                    tspkg_all.append(tspkg)
+
+                wdigest_sec = section.split("wdigest :\t")[1].split("\tkerberos :")[0].splitlines()
+                for line in wdigest_sec:
+                    if '\t *' in line:
+                        wdigest[line.split("* ")[1].split(":")[0]] = line.split(": ")[1].split("\n")[0]
+                if wdigest:
+                    wdigest_all.append(wdigest)
+
+                kerberos_sec = section.split("kerberos :\t")[1].split("\tssp :")[0].splitlines()
+                for line in kerberos_sec:
+                    if '\t *' in line:
+                        kerberos[line.split("* ")[1].split(":")[0]] = line.split(": ")[1].split("\n")[0]
+                if kerberos:
+                    kerberos_all.append(kerberos)
+
+                ssp_sec = section.split("ssp :\t")[1].split("\tcredman :")[0].splitlines()
+                for line in ssp_sec:
+                    if '\t *' in line:
+                        ssp[line.split("* ")[1].split(":")[0]] = line.split(": ")[1].split("\n")[0]
+                if ssp:
+                    ssp_all.append(ssp)
+
+                credman_sec = section.split("credman :\t")[1].splitlines()
+                for line in credman_sec:
+                    if '\t *' in line:
+                        credman[line.split("* ")[1].split(":")[0]] = line.split(": ")[1].split("\n")[0]
+                if credman:
+                    credman_all.append(credman)
+
+        msv_all = [collections.OrderedDict(t) for t in set([tuple(d.items()) for d in msv_all])]
+        tspkg_all = [collections.OrderedDict(t) for t in set([tuple(d.items()) for d in tspkg_all])]
+        wdigest_all = [collections.OrderedDict(t) for t in set([tuple(d.items()) for d in wdigest_all])]
+        kerberos_all = [collections.OrderedDict(t) for t in set([tuple(d.items()) for d in kerberos_all])]
+        ssp_all = [collections.OrderedDict(t) for t in set([tuple(d.items()) for d in ssp_all])]
+        credman_all = [collections.OrderedDict(t) for t in set([tuple(d.items()) for d in credman_all])]
+
+        parsed_data = "Results\n\n"
+
+        if msv_all:
+            parsed_data += "msv\n---\n"
+            for m in msv_all:
+                for key in m:
+                    parsed_data += key.rstrip()+" : "+m[key]+" | "
+                parsed_data += ">\n"
+            parsed_data += "\n"
+
+        if tspkg_all:
+            parsed_data += "tspkg\n-----\n"
+            for m in tspkg_all:
+                for key in m:
+                    parsed_data += key.rstrip()+" : "+m[key]+" | "
+                parsed_data += ">\n"
+            parsed_data += "\n"
+
+        if wdigest_all:
+            parsed_data += "wdigest\n-------\n"
+            for m in wdigest_all:
+                for key in m:
+                    parsed_data += key.rstrip()+" : "+m[key]+" | "
+                parsed_data += ">\n"
+            parsed_data += "\n"
+
+        if kerberos_all:
+            parsed_data += "kerberos\n--------\n"
+            for m in kerberos_all:
+                for key in m:
+                    parsed_data += key.rstrip()+" : "+m[key]+" | "
+                parsed_data += ">\n"
+            parsed_data += "\n"
+
+        if ssp_all:
+            parsed_data += "ssp\n---\n"
+            for m in ssp_all:
+                for key in m:
+                    parsed_data += key.rstrip()+" : "+m[key]+" | "
+                parsed_data += ">\n"
+            parsed_data += "\n"
+
+        if credman_all:
+            parsed_data += "credman\n-------\n"
+            for m in credman_all:
+                for key in m:
+                    parsed_data += key.rstrip()+" : "+m[key]+" | "
+                parsed_data += ">\n"
+            parsed_data += "\n"
+
+        self.print_good(parsed_data)
+
+
 
         self.mimi_output = data
         #self.display()
@@ -63,7 +183,8 @@ class DynWrapXShellcodeJob(core.job.Job):
 
     def display(self):
         try:
-            self.print_good(self.mimi_output)
+            pass
+            # self.print_good(self.mimi_output)
         except:
             pass
         #self.shell.print_plain(str(self.errno))
