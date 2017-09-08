@@ -27,9 +27,6 @@ class UserHunterJob(core.job.Job):
         elif "***" in data:
             self.parse_sessions_data(data)
 
-        # parse_sessions_data(data)
-        # self.print_good(data)
-
         handler.reply(200)
 
     def parse_sessions_data(self, data):
@@ -39,7 +36,7 @@ class UserHunterJob(core.job.Job):
             if session:
                 user = session.split(":")[0]
                 if "$" in user:
-                    continue # don't give a shit about machine accounts
+                    continue # not concerned with machine accounts
                 comps = ", ".join(list(set(session.split(":")[1].split(","))))
                 self.shell.print_plain(user + " => " + comps)
 
@@ -47,16 +44,16 @@ class UserHunterJob(core.job.Job):
         self.display()
 
     def display(self):
-        try:
-            self.print_good(self.data)
-        except:
-            pass
-        #self.shell.print_plain(str(self.errno))
+        pass
+        # try:
+        #     self.print_good(self.data)
+        # except:
+        #     pass
 
 class UserHunterImplant(core.implant.Implant):
 
     NAME = "User Hunter"
-    DESCRIPTION = "Find a user, you fuck"
+    DESCRIPTION = "Identifies and locates all logged in users"
     AUTHORS = ["TheNaterz"]
 
     def load(self):

