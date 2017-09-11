@@ -4,7 +4,7 @@
 	<file name="dynwrapx.dll">
     	<comClass
         	description="DynamicWrapperX Class"
-        	clsid="{89565275-A714-4a43-912E-978B935EDCCC}"
+        	clsid="{89565276-A714-4a43-912E-978B935EDCCC}"
         	threadingModel="Both"
         	progid="DynamicWrapperX"/>
 	</file>
