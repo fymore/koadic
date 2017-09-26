@@ -43,6 +43,10 @@ class Colors(object):
     def get_prompt(self, state, isreadline = True):
         import os
         glyph = "#" if os.geteuid() == 0 else "$"
+        last = state.split("/")[-1]
+        state = [s[0:3] for s in state.split("/")[:-1]]
+        state.append(last)
+        state = "/".join(state)
         return "%s%s: %s%s" % (self.colorize("(", [self.GREEN], isreadline),
                                  self.colorize("koadic", [self.BOLD], isreadline),
                                  self.colorize(state, [self.CYAN], isreadline),
