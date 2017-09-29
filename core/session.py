@@ -29,6 +29,7 @@ class Session(object):
         self.user = ""
         self.computer = ""
         self.dc = ""
+        self.arch = ""
 
         self.ip = ip
         self.user_agent = user_agent
@@ -51,7 +52,7 @@ class Session(object):
             return False
 
         data = data.decode().split("~~~")
-        if len(data) != 4:
+        if len(data) != 5:
             return False
 
         self.user = data[0]
@@ -60,6 +61,7 @@ class Session(object):
         self.os = data[2]
         #self.dc = data[3].split("\\\\")[1] if data[3] else "Unknown"
         self.dc = data[3] if data[3] else "Unknown"
+        self.arch = data[4]
 
         self.shell.print_good(
             "Zombie %d: %s @ %s -- %s" % (self.id, self.user, self.computer, self.os))

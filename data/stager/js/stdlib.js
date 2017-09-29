@@ -152,6 +152,22 @@ Koadic.user.DC = function()
 
 }
 
+Koadic.user.Arch = function()
+{
+    try
+    {
+        var wmi = GetObject("winmgmts:\\\\.\\root\\CIMV2");
+        var colItems = wmi.ExecQuery("SELECT * FROM Win32_OperatingSystem");
+
+        var enumItems = new Enumerator(colItems);
+        var objItem = enumItems.item();
+        return objItem.OSArchitecture;
+    }
+    catch(e){}
+
+    return "Unknown";
+}
+
 
 Koadic.user.info = function()
 {
@@ -164,6 +180,7 @@ Koadic.user.info = function()
     info += "~~~" + net.ComputerName;
     info += "~~~" + Koadic.user.OS();
     info += "~~~" + Koadic.user.DC();
+    info += "~~~" + Koadic.user.Arch();
 
     return info;
 }

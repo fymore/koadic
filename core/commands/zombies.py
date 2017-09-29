@@ -47,6 +47,7 @@ def print_session(shell, session):
     print_data(shell, "Hostname", session.computer)
     print_data(shell, "Primary DC", session.dc)
     print_data(shell, "OS", session.os)
+    print_data(shell, "OSArch", session.arch)
     print_data(shell, "Elevated", "YES!" if session.elevated == session.ELEVATED_TRUE else "No")
     shell.print_plain("")
     print_data(shell, "User Agent", session.user_agent)
@@ -66,7 +67,8 @@ def print_all_sessions(shell):
         for session in stager.sessions:
             alive = "Alive" if session.status == 1 else "Dead"
             seen = datetime.datetime.fromtimestamp(session.last_active).strftime('%Y-%m-%d %H:%M:%S')
-            shell.print_plain(formats.format(session.id, session.ip, alive, seen))
+            elevated = '*' if session.elevated else ''
+            shell.print_plain(formats.format(str(session.id)+elevated, session.ip, alive, seen))
 
     shell.print_plain("")
     shell.print_plain('Use "zombies %s" for detailed information about a session.' % shell.colors.colorize("ID", [shell.colors.BOLD]))
