@@ -2,7 +2,6 @@ import core.implant
 import core.job
 import string
 import collections
-import tabulate
 
 class DynWrapXShellcodeJob(core.job.Job):
     def create(self):
