@@ -6,6 +6,7 @@ import collections
 class DynWrapXShellcodeJob(core.job.Job):
     def create(self):
         self.fork32Bit = True
+        self.errstat = 0
 
     def parse_mimikatz(self, data):
         full_data = data
@@ -23,10 +24,8 @@ class DynWrapXShellcodeJob(core.job.Job):
             self.errstat = 1
             return
 
-        if "Authentication Id :" in data:
+        if "Authentication Id :" in data and "sekurlsa::logonpasswords" in data:
             from tabulate import tabulate
-            tabulate.PRESERVE_WHITESPACE = False
-            self.errstat = 0
             nice_data = data.split('\n\n')
             msv_all = []
             tspkg_all = []
@@ -134,6 +133,9 @@ class DynWrapXShellcodeJob(core.job.Job):
             #     print(tabulate(msv_all, headers="keys"))
 
             self.mimi_output = parsed_data
+            return
+
+        self.mimi_output = data
 
 
     def report(self, handler, data, sanitize = False):
@@ -236,6 +238,8 @@ class DynWrapXShellcodeImplant(core.implant.Implant):
         self.options.set("SHIMX64UUID", uuid.uuid4().hex)
         self.options.set("MIMIX64UUID", uuid.uuid4().hex)
         self.options.set("MIMIX86UUID", uuid.uuid4().hex)
+
+        self.options.set("MIMICMD", self.options.get("MIMICMD").lower())
 
 
         self.options.set("SHIMX86BYTES", self.make_arrDLL(self.options.get("SHIMX86DLL")))
