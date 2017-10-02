@@ -5,6 +5,14 @@ It is possible to serve payloads completely in memory from stage 0 to beyond, as
 
 Koadic also attempts to be compatible with both Python 2 and Python 3.
 
+### Install
+
+```
+# git clone https://github.com/zerosum0x0/koadic.git
+# cd koadic
+# pip install -r requirements.txt
+```
+
 ### Demo
 
 [![Koadic Demo](http://img.youtube.com/vi/EmUxTqS5GrA/0.jpg)](http://www.youtube.com/watch?v=EmUxTqS5GrA "Koadic Demo")
