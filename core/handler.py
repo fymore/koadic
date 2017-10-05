@@ -187,6 +187,7 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200, script)
 
     def handle_work(self):
+        count = 0
         while True:
             if self.session.killed:
                 return self.reply(500, "");
@@ -195,8 +196,17 @@ class Handler(BaseHTTPRequestHandler):
             if job is not None:
                 break
 
-            time.sleep(1)
+            try:
+                self.request.settimeout(1)
+                if len(self.request.recv(1)) == 0:
+                    return
+            except Exception as e:
+                pass
             self.session.update_active()
+            count += 1
+            if count > 600:
+                self.reply(201, "")
+                return
 
         job.receive()
 
