@@ -7,7 +7,7 @@ class ExecCmdJob(core.job.Job):
         self.display()
 
     def display(self):
-        self.shell.print_plain("Result for `%s`:" % self.options.get('CMD'))
+        self.shell.print_plain("Result for `%s`:" % self.options.get('CMD').replace('\\"', '"').replace("\\\\", "\\"))
         self.shell.print_plain(self.data)
 
 class ExecCmdImplant(core.implant.Implant):
@@ -25,6 +25,7 @@ class ExecCmdImplant(core.implant.Implant):
     def run(self):
         # generate new file every time this is run
         self.options.set("FILE", uuid.uuid4().hex)
+        self.options.set("CMD", self.options.get('CMD').replace("\\", "\\\\").replace('"', '\\"'))
 
         payloads = {}
         #payloads["vbs"] = self.load_script("data/implant/manage/exec_cmd.vbs", self.options)
