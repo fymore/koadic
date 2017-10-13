@@ -84,6 +84,51 @@ function read_netwkstauserenum(bufptrptr, entriesread, win32, server)
   return users;
 }
 
+function read_registryusers(server, ip)
+{
+  try
+  {
+    var reg = Koadic.registry.provider(server);
+  }
+  catch (e)
+  {
+    return [];
+  }
+  var method = reg.Methods_.Item("EnumKey");
+  var inparams = method.InParameters.SpawnInstance_();
+  inparams.hDefKey = 0x80000003;
+  inparams.sSubKeyName = "";
+  var outparams = reg.ExecMethod_(method.Name, inparams);
+  var sids = [];
+  switch(outparams.ReturnValue)
+  {
+    case 0:          // Success
+      sids = (outparams.sNames != null) ? outparams.sNames.toArray() : [];
+      break;
+
+    case 2:        // Not Found
+      return sids;
+  }
+
+  var users = [];
+  var re = /S-1-5-21-[0-9]+-[0-9]+-[0-9]+-[0-9]+$/;
+  for(var i in sids)
+  {
+    if(re.test(sids[i]))
+    {
+      var session = {};
+      session['cname'] = ip;
+      var path = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList\\"+sids[i];
+      var key = "ProfileImagePath";
+      var profile = Koadic.registry.read(Koadic.registry.HKLM, path, key, Koadic.registry.STRING, server).SValue;
+      session['username'] = profile.split("\\").pop().split(".")[0];
+      users.push(session);
+    }
+  }
+
+  return users;
+}
+
 function net_session_enum(servers, win32)
 {
   var bufptrptr;
@@ -92,6 +137,7 @@ function net_session_enum(servers, win32)
   var all_sessions = [];
   for(var i=0;i<servers.length;i++)
   {
+    var ip = resolve(servers[i]);
     bufptrptr = win32.MemAlloc(4);
     entriesread = win32.MemAlloc(4);
     totalentries = win32.MemAlloc(4);
@@ -104,17 +150,28 @@ function net_session_enum(servers, win32)
         //nothing
     }
 
+    win32.MemFree(bufptrptr);
+    win32.MemFree(entriesread);
+    win32.MemFree(totalentries);
+
     bufptrptr = win32.MemAlloc(4);
     entriesread = win32.MemAlloc(4);
     totalentries = win32.MemAlloc(4);
     res = win32.NetWkstaUserEnum(servers[i], 0, bufptrptr, -1, entriesread, totalentries, 0);
     switch (res) {
       case 0:
-        all_sessions.push(read_netwkstauserenum(bufptrptr, entriesread, win32, resolve(servers[i])));
+        all_sessions.push(read_netwkstauserenum(bufptrptr, entriesread, win32, ip));
         break;
       default:
         //nothing
     }
+
+    win32.MemFree(bufptrptr);
+    win32.MemFree(entriesread);
+    win32.MemFree(totalentries);
+
+    // read registry for logged in users
+    all_sessions.push(read_registryusers(servers[i], ip));
 
   }
   return all_sessions;
@@ -191,6 +248,11 @@ try
       //unknown
 
   }
+
+  win32.MemFree(bufptrptr);
+  win32.MemFree(entriesread);
+  win32.MemFree(totalentries);
+
   if (servers)
   {
     var sessions = net_session_enum(servers, win32);
