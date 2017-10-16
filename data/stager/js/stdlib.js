@@ -684,11 +684,20 @@ Koadic.file.get32BitFolder = function()
 
 Koadic.file.readText = function(path)
 {
-    var fd = Koadic.FS.OpenTextFile(Koadic.file.getPath(path), 1, true, 0);
-    var data = fd.ReadAll();
-    fd.Close();
-
-    return data;
+    while(true)
+    {
+        if (Koadic.FS.FileExists(Koadic.file.getPath(path)) && Koadic.FS.GetFile(Koadic.file.getPath(path)).Size > 0)
+        {
+            var fd = Koadic.FS.OpenTextFile(Koadic.file.getPath(path), 1, false, 0);
+            var data = fd.ReadAll();
+            fd.Close();
+            return data;
+        }
+        else
+        {
+            Koadic.shell.run("ping 127.0.0.1 -n 1", false);
+        }
+    }
 }
 
 Koadic.file.readBinary = function(path)
