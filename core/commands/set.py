@@ -7,7 +7,7 @@ def autocomplete(shell, line, text, state):
         return None
 
     env = shell.plugins[shell.state]
-    options = [x.name + " " for x in env.options.options if x.name.startswith(text) and not x.hidden]
+    options = [x.name + " " for x in env.options.options if x.name.upper().startswith(text.upper()) and not x.hidden]
 
     try:
         return options[state]
