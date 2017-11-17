@@ -25,7 +25,7 @@ import core.loader
 class Handler(BaseHTTPRequestHandler):
 
     def reply(self, status, data=b"", headers={}):
-        self.shell.print_verbose("Sending status %d with %d bytes of data." % (status, len(data)))
+        self.shell.print_verbose("handler::reply() - sending status %d with %d bytes to %s" % (status, len(data), str(self.client_address)))
 
         self.send_response(status)
 
