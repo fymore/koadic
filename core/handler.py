@@ -25,6 +25,7 @@ import core.loader
 class Handler(BaseHTTPRequestHandler):
 
     def reply(self, status, data=b"", headers={}):
+        self.shell.print_verbose("Sending status %d with %d bytes of data." % (status, len(data)))
 
         self.send_response(status)
 
@@ -172,11 +173,13 @@ class Handler(BaseHTTPRequestHandler):
         return self.reply(404)
 
     def handle_stage(self):
+        self.shell.print_verbose("handler::handle_stage()")
         self.options.set("JOBKEY", "stage")
         data = self.post_process_script(self.options.get("_STAGE_"))
         self.reply(200, data)
 
     def handle_new_session(self):
+        self.shell.print_verbose("handler::handle_new_session()")
         self.init_session()
         data = self.post_process_script(self.options.get("_STAGE_"))
         self.reply(200, data)
@@ -233,7 +236,10 @@ class Handler(BaseHTTPRequestHandler):
         #key = key[0].decode()
         for session in self.server.server.sessions:
             if session.key == key:
+                self.shell.print_verbose("handler::find_session() - found session.key = %s" % (key))
                 return session
+
+        self.shell.print_verbose("handler::find_session() - COULD NOT FIND session.key = %s" % (key))
         return None
 
     def do_post(self):

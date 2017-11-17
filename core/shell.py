@@ -20,6 +20,7 @@ class Shell(object):
         self.state = "stager/js/mshta"
         self.colors = core.colors.Colors()
         self.extant = core.extant.Extant(self)
+        self.verbose = False
 
     def run(self):
         self.main_thread_id = threading.current_thread().ident
@@ -56,7 +57,7 @@ class Shell(object):
         action = cmd.split(" ")[0].lower()
         if not action:
             return
-        remap = { 
+        remap = {
             "?": "help",
             "exploit": "run",
             "execute": "run"
@@ -148,6 +149,10 @@ class Shell(object):
 
     def print_status(self, text, redraw = False):
         self.print_text(self.colors.status("[*]"), text, redraw)
+
+    def print_verbose(self, text, redraw = False):
+        if self.verbose:
+            self.print_text(self.colors.colorize("[v]", [self.colors.BOLD]), text, redraw)
 
     def print_help(self, text, redraw = False):
         self.print_text(self.colors.colorize("[?]", [self.colors.BOLD]), text, redraw)
