@@ -85,6 +85,8 @@ class Handler(BaseHTTPRequestHandler):
             self.options = copy.deepcopy(self.server.server.options)
             self.loader = core.loader
 
+            self.shell.print_verbose("handler::handle() - Incoming HTTP from %s" % str(self.client_address))
+
             return BaseHTTPRequestHandler.handle(self)
         except (socket.error, socket.timeout) as e:
             pass
@@ -128,7 +130,8 @@ class Handler(BaseHTTPRequestHandler):
 
             jobkey = self.options.get("JOBNAME")
             if jobkey in self.get_params:
-                self.job = self.session.get_job(self.get_params[jobkey][0])
+                if self.get_params[jobkey][0] != "stage":
+                    self.job = self.session.get_job(self.get_params[jobkey][0])
 
                 if self.job:
                     self.options.set("JOBKEY", self.job.key)
