@@ -1,4 +1,4 @@
-DESCRIPTION = "exits the program"
+DESCRIPTION = "turn verbosity on/off: verbose (0|1)"
 
 def autocomplete(shell, line, text, state):
     return None
