@@ -684,6 +684,8 @@ Koadic.file.get32BitFolder = function()
 
 Koadic.file.readText = function(path)
 {
+
+    var loopcount = 0;
     while(true)
     {
         if (Koadic.FS.FileExists(Koadic.file.getPath(path)) && Koadic.FS.GetFile(Koadic.file.getPath(path)).Size > 0)
@@ -695,7 +697,12 @@ Koadic.file.readText = function(path)
         }
         else
         {
-            Koadic.shell.run("ping 127.0.0.1 -n 1", false);
+            loopcount += 1;
+            if (loopcount > 180)
+            {
+                return "";
+            }
+            Koadic.shell.run("ping 127.0.0.1 -n 2", false);
         }
     }
 }
