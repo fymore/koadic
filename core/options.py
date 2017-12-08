@@ -37,7 +37,7 @@ class Options(object):
     def get(self, name):
         name = name.upper()
         for option in self.options:
-            if option.name == name or option.alias == name:
+            if option.name == name or option.alias == name and name:
                 return option.value
 
         return None
@@ -46,7 +46,7 @@ class Options(object):
         name = name.upper()
 
         for option in self.options:
-            if option.name == name or option.alias == name:
+            if option.name == name or option.alias == name and name:
                 return option.set(value)
 
         return False
