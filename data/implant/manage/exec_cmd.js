@@ -1,7 +1,10 @@
 try
 {
     var output = Koadic.shell.exec("~CMD~", "~DIRECTORY~\\~FILE~.txt");
-    Koadic.work.report(output);
+    if (output != "")
+    {
+      Koadic.work.report(output);
+    }
 }
 catch (e)
 {
