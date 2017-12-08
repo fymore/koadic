@@ -67,7 +67,9 @@ def run_cmdshell(shell, session):
                         working_dir += dest
                     elif ".." in dest:
                         number = len(dest.split("\\"))
-                        working_dir = "\\".join(working_dir.split("\\")[:(number*-1)])+"\\"
+                        working_dir = "\\".join(working_dir.split("\\")[:(number*-1)])
+                        if len(working_dir.split("\\")) == 1:
+                            working_dir += "\\"
                     else:
                         working_dir = dest
 
