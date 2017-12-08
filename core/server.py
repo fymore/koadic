@@ -42,7 +42,7 @@ class Server(threading.Thread):
         self._setup_server()
 
     def _setup_server(self):
-        self.http = ThreadedHTTPServer(('0.0.0.0', int(self.options.get('LPORT'))), self.handler_class)
+        self.http = ThreadedHTTPServer(('0.0.0.0', int(self.options.get('SRVPORT'))), self.handler_class)
         self.http.timeout = None
         self.http.daemon_threads = True
         self.http.server = self
@@ -88,7 +88,7 @@ class Server(threading.Thread):
         return payload
 
     def _build_url(self):
-        hostname = self.options.get("LHOST")
+        hostname = self.options.get("SRVHOST")
         if hostname == '0.0.0.0':
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             try:
@@ -99,7 +99,7 @@ class Server(threading.Thread):
 
         #self.hostname = "127.0.0.1"
         self.hostname = hostname
-        self.port = str(self.options.get("LPORT"))
+        self.port = str(self.options.get("SRVPORT"))
 
         prefix = "https" if self.is_https else "http"
         url = prefix + "://" + self.hostname + ':' + self.port

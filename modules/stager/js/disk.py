@@ -9,7 +9,7 @@ class DiskStager(core.stager.Stager):
     WORKLOAD = "js"
 
     def load(self):
-        #self.options.set("LPORT", 9996)
+        #self.options.set("SRVPORT", 9996)
         self.port = 9996
 
         self.template = self.loader.load_script("data/stager/js/mshta/template.hta")

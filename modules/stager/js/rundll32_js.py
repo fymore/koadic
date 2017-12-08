@@ -7,7 +7,7 @@ class RunDLL32JSStager(core.stager.Stager):
     AUTHORS = ['zerosum0x0']
 
     def load(self):
-        #self.options.set("LPORT", 9997)
+        #self.options.set("SRVPORT", 9997)
         self.port = 9997
 
         self.template = "~SCRIPT~"

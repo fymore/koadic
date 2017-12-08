@@ -2,6 +2,7 @@ import core.plugin
 import core.server
 import random
 import string
+import socket
 
 class Stager(core.plugin.Plugin):
     WORKLOAD = "NONE"
@@ -10,9 +11,17 @@ class Stager(core.plugin.Plugin):
         self.port = 9999
         super(Stager, self).__init__(shell)
 
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        hostname = '0.0.0.0'
+        try:
+            s.connect(('8.8.8.8', 80))
+            hostname = s.getsockname()[0]
+        finally:
+            s.close()
+
         # general, non-hidden, non-advanced options
-        self.options.register('LHOST', '0.0.0.0', 'Where the stager should call home')
-        self.options.register('LPORT', self.port, 'The port to listen for stagers on')
+        self.options.register('SRVHOST', hostname, 'Where the stager should call home')
+        self.options.register('SRVPORT', self.port, 'The port to listen for stagers on')
         self.options.register('EXPIRES', '', 'MM/DD/YYYY to stop calling home', required = False)
         #self.options.register('DIRECTORY', '%TEMP%', 'A writeable directory on the target', advanced = True)
         self.options.register('KEYPATH', '',  'Private key for TLS communications', required = False)
@@ -60,9 +69,10 @@ class Stager(core.plugin.Plugin):
             server.start()
 
             self.shell.print_good("Spawned a stager at %s" % (server.options.get("URL")))
+            self.shell.print_warning("Avoid manually editing this URL!!!")
             server.print_payload()
         except OSError as e:
-            port = str(self.options.get("LPORT"))
+            port = str(self.options.get("SRVPORT"))
             if e.errno == 98:
                 self.shell.print_error("Port %s is already bound!" % (port))
             elif e.errno == 13:
@@ -71,9 +81,11 @@ class Stager(core.plugin.Plugin):
                 raise
             return
         except Exception as ex:
+            import traceback
             template = "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             self.shell.print_error(message)
+            traceback.print_exc()
         except:
             self.shell.print_error("Failed to spawn stager")
             raise

@@ -11,7 +11,7 @@ def help(shell):
 def execute(shell, cmd):
     env = shell.plugins[shell.state]
 
-    formats = '\t{0:<12}{1:<16}{2:<8}{3:<16}'
+    formats = '\t{0:<12}{1:<20}{2:<8}{3:<16}'
 
     shell.print_plain("")
     shell.print_plain(formats.format("NAME", "VALUE", "REQ", "DESCRIPTION"))
@@ -25,7 +25,7 @@ def execute(shell, cmd):
             continue
 
         prettybool = "yes" if option.required else "no"
-        value = str(option.value)[0:12] + "..." if len(str(option.value)) > 12 else str(option.value)
+        value = str(option.value)[0:16] + "..." if len(str(option.value)) > 16 else str(option.value)
         shell.print_plain(formats.format(option.name, value, prettybool, option.description))
 
     shell.print_plain("")
