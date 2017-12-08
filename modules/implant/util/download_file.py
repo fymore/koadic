@@ -14,6 +14,8 @@ class DownloadFileImplant(core.implant.Implant):
         self.options.register("RFILE", "", "remote file to get")
 
     def run(self):
+        self.options.set("RFILE", self.options.get('RFILE').replace("\\", "\\\\").replace('"', '\\"'))
+
         payloads = {}
         payloads["js"] = self.loader.load_script("data/implant/util/download_file.js", self.options)
 
@@ -35,5 +37,5 @@ class DownloadFileJob(core.job.Job):
         self.display()
 
     def display(self):
-        rfile = self.options.get("RFILE")
+        rfile = self.options.get("RFILE").replace('\\"', '"').replace("\\\\", "\\")
         self.shell.print_good("%s saved to %s (%d bytes)" % (rfile, self.save_fname, self.save_len))
