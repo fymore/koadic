@@ -28,9 +28,11 @@ def run_cmdshell(shell, session):
     import copy
 
     exec_cmd_name = 'implant/manage/exec_cmd'
+    download_file_name = 'implant/util/download_file'
     # this won't work, Error: "can't pickle module objects"
     #plugin = copy.deepcopy(shell.plugins['implant/manage/exec_cmd'])
     plugin = shell.plugins[exec_cmd_name]
+    download_file_plugin = shell.plugins[download_file_name]
 
     # copy (hacky shit)
     old_prompt = shell.prompt
@@ -59,6 +61,19 @@ def run_cmdshell(shell, session):
             if len(cmd) > 0:
                 if cmd.lower() == 'exit':
                     return
+                elif cmd.split(" ")[0].lower() == 'download' and len(cmd.split(" ")) > 1:
+                    old_download_zombie = download_file_plugin.options.get("ZOMBIE")
+                    old_download_rfile = download_file_plugin.options.get("RFILE")
+                    download_file_plugin.options.set("ZOMBIE", id)
+                    rfile = working_dir
+                    if rfile[-1] != "\\":
+                        rfile += "\\"
+                    rfile += " ".join(cmd.split(" ")[1:])
+                    download_file_plugin.options.set("RFILE", rfile)
+                    download_file_plugin.run()
+                    download_file_plugin.options.set("ZOMBIE", old_download_zombie)
+                    download_file_plugin.options.set("RFILE", old_download_rfile)
+                    continue
                 elif cmd.split(" ")[0].lower() == 'cd' and len(cmd.split(" ")) > 1:
                     dest = " ".join(cmd.split(" ")[1:])
                     if ":" not in dest and ".." not in dest:
