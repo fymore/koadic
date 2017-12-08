@@ -43,8 +43,6 @@ def run_cmdshell(shell, session):
     id = str(session.id)
     ip = session.ip
 
-    working_dir = ""
-
     while True:
         shell.state = exec_cmd_name
         shell.prompt = get_prompt(shell, id, ip, True)
@@ -57,24 +55,8 @@ def run_cmdshell(shell, session):
             cmd = shell.get_command(shell.prompt)
 
             if len(cmd) > 0:
-                if cmd.lower() == 'exit':
+                if cmd == 'exit':
                     return
-                elif cmd.split(" ")[0].lower() == 'cd' and len(cmd.split(" ")) > 1:
-                    dest = " ".join(cmd.split(" ")[1:])
-                    if ":" not in dest and ".." not in dest:
-                        if working_dir[-1] != "\\":
-                            working_dir += "\\"
-                        working_dir += dest
-                    elif ".." in dest:
-                        number = len(dest.split("\\"))
-                        working_dir = "\\".join(working_dir.split("\\")[:(number*-1)])+"\\"
-                    else:
-                        working_dir = dest
-
-                    cmd = "cd "+working_dir
-                else:
-                    if working_dir:
-                        cmd = "cd "+working_dir+" & "+cmd
 
                 plugin.options.set("CMD", cmd)
                 plugin.run()
