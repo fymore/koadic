@@ -7,6 +7,7 @@ class Option(object):
         self.required = True
         self.advanced = False
         self.hidden = False
+        self.alias = ""
         self.enum = []
         self.value = value
         self.default = value
@@ -36,7 +37,7 @@ class Options(object):
     def get(self, name):
         name = name.upper()
         for option in self.options:
-            if option.name == name:
+            if option.name == name or option.alias == name:
                 return option.value
 
         return None
@@ -45,7 +46,7 @@ class Options(object):
         name = name.upper()
 
         for option in self.options:
-            if option.name == name:
+            if option.name == name or option.alias == name:
                 return option.set(value)
 
         return False
