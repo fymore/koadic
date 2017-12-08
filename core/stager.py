@@ -20,8 +20,8 @@ class Stager(core.plugin.Plugin):
             s.close()
 
         # general, non-hidden, non-advanced options
-        self.options.register('SRVHOST', hostname, 'Where the stager should call home')
-        self.options.register('SRVPORT', self.port, 'The port to listen for stagers on')
+        self.options.register('SRVHOST', hostname, 'Where the stager should call home', alias = "LHOST")
+        self.options.register('SRVPORT', self.port, 'The port to listen for stagers on', alias = "LPORT")
         self.options.register('EXPIRES', '', 'MM/DD/YYYY to stop calling home', required = False)
         #self.options.register('DIRECTORY', '%TEMP%', 'A writeable directory on the target', advanced = True)
         self.options.register('KEYPATH', '',  'Private key for TLS communications', required = False)
